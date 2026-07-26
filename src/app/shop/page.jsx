@@ -1,14 +1,11 @@
 "use client"
 
+import { Suspense } from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { ProductCard } from "@/components/product/ProductCard"
 import { products } from "@/data/products"
 
-// NOTE: category filtering moved from a URL path param (/shop/men, like the
-// old React Router version) to a query param (/shop?category=men). This is
-// the more idiomatic Next.js App Router pattern for filters and avoids
-// needing a second route file just for the filtered view.
 const categories = [
   { label: "All", value: null },
   { label: "Men", value: "men" },
@@ -16,7 +13,7 @@ const categories = [
   { label: "Kids", value: "kids" },
 ]
 
-export default function Shop() {
+function ShopContent() {
   const searchParams = useSearchParams()
   const category = searchParams.get("category")
 
@@ -57,5 +54,13 @@ export default function Shop() {
         <p className="text-neutral-500">No products in this category yet.</p>
       )}
     </section>
+  )
+}
+
+export default function Shop() {
+  return (
+    <Suspense fallback={<div className="max-w-7xl mx-auto px-6 py-16">Loading...</div>}>
+      <ShopContent />
+    </Suspense>
   )
 }
